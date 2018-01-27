@@ -64,7 +64,7 @@ class MyClient(discord.Client):
 						return m
 
 				msgwaitfor = await client.wait_for("message", check=checkmsg, timeout=None)
-				if msgwaitfor.content != " ": #Okay this isn't needed here...
+				if msgwaitfor.content != " ":
 
 					if msgwaitfor.content == "green":
 						print("Color: Green")
