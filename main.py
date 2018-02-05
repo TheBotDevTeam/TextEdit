@@ -8,9 +8,8 @@ import KEYS
 
 class MyClient(discord.Client):
 	async def on_ready(self):
-		print("Login successful")
-		print("A list of all servers where the bot is on:")
-		#List of all Servers the Bot is
+		print("All servers: \n")
+		#get all servers
 		insguilds = 0
 		for guild in client.guilds:
 			print("%s - %s" %(guild.name, guild.id))
