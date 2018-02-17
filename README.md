@@ -14,3 +14,5 @@ I can create your very own bot for you! Does that sound good? If so, please have
 # Important
 It is important that you enter your [bottoken](https://discordapp.com/developers) in the file KEYS.py, otherwise the bot will not work.
 
+#### For German
+Here is a German [version by GregTCTLK](https://github.com/GregTCLTK/TextEdit)
