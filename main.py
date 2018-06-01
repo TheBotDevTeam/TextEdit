@@ -133,11 +133,20 @@ class MyClient(discord.Client):
 
     async def on_guild_join(self, guild):
         headers = {
-            'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM4NDc1NzcxNzM0NjAyNTQ3MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTEyMjA5MjY2fQ.ihdiqVRcD_shUX14Qt5j35rpji7CtgTx-5oTnHP9BTY'}
+            'Authorization': '123456789'}
         data = {'server_count': len(client.guilds)}
-        api_url = 'https://discordbots.org/api/bots/' + '384757717346025472' + '/stats'
+        api_url = 'https://discordbots.org/api/bots/384757717346025472/stats'
         async with aiohttp.ClientSession() as session:
             await session.post(api_url, data=data, headers=headers)
+
+    async def on_guild_remove(self, guild):
+        headers = {
+            'Authorization': '123456789'}
+        data = {'server_count': len(client.guilds)}
+        api_url = 'https://discordbots.org/api/bots/384757717346025472/stats'
+        async with aiohttp.ClientSession() as session:
+            await session.post(api_url, data=data, headers=headers)
+
 #Log in to Bot
 client= MyClient()
 client.run(KEYS.TOKEN) #Your Programm does only run if you enter your Prefix in the file KEYS
