@@ -1,2 +1,4 @@
-TOKEN="Insert your token here"
-PREFIX="-"
+import os
+
+TOKEN = os.environ['TOKEN']
+PREFIX = "-"
