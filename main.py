@@ -4,11 +4,12 @@ from asyncio import sleep
 
 import aiohttp
 # Files
-from discord import Embed, Color, Game, Forbidden, Message
+from discord import Embed, Color, Game, Forbidden, Message, Permissions
 from discord.ext.commands import Bot, Context, has_permissions, Converter, BadArgument, CommandNotFound, \
     MissingPermissions
+from discord.utils import oauth_url
 
-import KEYS
+from config import config
 
 
 class MyClient(Bot):
@@ -24,14 +25,14 @@ class MyClient(Bot):
             insguilds = insguilds + 1
         print("Guilds: " + str(insguilds))
 
-        # Game Precense
-        game = Game(name="-help")
+        # Game Presence
+        game = Game(name=config.prefix + "help")
         await client.change_presence(activity=game)
 
     # noinspection PyMethodMayBeStatic
     async def on_guild_join(self, guild):
         headers = {
-            'Authorization': '123456789'}
+            'Authorization': config.dbo_token}
         data = {'server_count': len(client.guilds)}
         api_url = 'https://discordbots.org/api/bots/384757717346025472/stats'
         async with aiohttp.ClientSession() as session:
@@ -40,7 +41,7 @@ class MyClient(Bot):
     # noinspection PyMethodMayBeStatic
     async def on_guild_remove(self, guild):
         headers = {
-            'Authorization': '123456789'}
+            'Authorization': config.dbo_token}
         data = {'server_count': len(client.guilds)}
         api_url = 'https://discordbots.org/api/bots/384757717346025472/stats'
         async with aiohttp.ClientSession() as session:
@@ -48,7 +49,7 @@ class MyClient(Bot):
 
 
 # Log in to Bot
-client = MyClient(command_prefix='-')
+client = MyClient(command_prefix=config.prefix)
 client.remove_command('help')
 
 
@@ -56,14 +57,27 @@ client.remove_command('help')
 async def help(ctx: Context):
     try:
         await ctx.author.send(embed=Embed(
-            description="***Support***\n**Prefix:**\n-[command]\n**Check if the bot is online**\n-ping \nshows that "
-                        "the bot is online and reads the messages\n**delete messages**\n-clear [ammount]\nDeletes the "
-                        "specified number of messages\n**Create a message**\n-send color text\n**with "
-                        "images**\n-header color http://image.link your text\n**Bot "
-                        "Info**\n-info\n-----------\nFormatting of the message: "
-                        "*https://thebotdev.de/Markdown.html*\n"))
+            description=f"""
+***Support***
+**Prefix:**
+{ctx.prefix}[command]
+**Check if the bot is online**
+{ctx.prefix}ping 
+shows that the bot is online and reads the messages
+**delete messages**
+{ctx.prefix}clear [ammount]
+Deletes the specified number of messages
+**Create a message**
+{ctx.prefix}send color text
+**with images**
+{ctx.prefix}header color http://image.link your text
+**Bot Info**
+{ctx.prefix}info
+-----------
+Formatting of the message: *https://thebotdev.de/Markdown.html*
+"""))
     except Forbidden:
-        return await ctx.send(content="Error! i couldnt send you the message per DM")
+        return await ctx.send(content="Error! i couldn't send you the message per DM")
     await ctx.send(content="I sent you a private message with all the orders!")
 
 
@@ -91,10 +105,12 @@ async def info(ctx: Context):
     await ctx.send(
         embed=Embed(
             color=Color.purple(),
-            description="**Bot by:** *BaseChip*\n**Project:** *TheBotDev*\n**Support:** *[BaseChips support server]("
-                        "https://discord.gg/HD7x2vx)*\n**Bot Invite:** *[INVITE BaseChips Bot]("
-                        "https://discordapp.com/api/oauth2/authorize?client_id=384757717346025472&permissions"
-                        "=67577856&scope=bot)*\n*This is a fork from GitHub from the Bot from BaseChip*"))
+            description=f"""
+**Bot by:** *BaseChip*
+**Project:** *TheBotDev*
+**Support:** *[BaseChips support server](https://discord.gg/HD7x2vx)*
+**Bot Invite:** *[INVITE BaseChips Bot]({oauth_url(client.user.id, Permissions(67577856))})*
+*This is a fork from GitHub from the Bot from BaseChip*"""))
 
 
 class ColorConverter(Converter):
@@ -137,7 +153,7 @@ async def on_command_error(ctx: Context, exc: BaseException):
     if isinstance(exc, CommandNotFound):
         mes = await ctx.send(
             embed=Embed(
-                description="Command not found. See `-help`",
+                description=f"Command not found. See `{ctx.prefix}help`",
                 color=Color.red(),
             )
         )
@@ -156,8 +172,8 @@ async def on_command_error(ctx: Context, exc: BaseException):
     else:
         mes = await ctx.send(
             embed=Embed(
-                description="An exception occurred during the processing of this command. I might be missing "
-                            "permissions here, if not, join our support guild(`-info`) ",
+                description=f"An exception occurred during the processing of this command. I might be missing "
+                            f"permissions here, if not, join our support guild(`{ctx.prefix}info`) ",
                 color=Color.red()
             )
         )
@@ -173,4 +189,4 @@ async def on_command_error(ctx: Context, exc: BaseException):
 client.on_command_error = on_command_error
 
 if __name__ == '__main__':
-    client.run(KEYS.TOKEN)  # Your Programm does only run if you enter your Prefix in the file KEYS
+    client.run(config.token)
